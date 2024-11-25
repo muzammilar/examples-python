@@ -18,8 +18,8 @@ def test_context_manager_success(chclient_entr_mock, chclient_exit_mock, ch_clie
 
     # basic test configurations
     conf = Box({
-        "host": 'clickhost',
-        "port": 8123,
+        "host": 'fake.com',
+        "port": 123,
         "username": 'default',
         "password": ''
     })
