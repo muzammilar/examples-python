@@ -11,9 +11,9 @@ def main():
             "password":''
         }
     )
-    client = xmpl.ClickHouseClient(config)
-    xmpl.setup_table(client)
-    xmpl.query_data(client)
+    with xmpl.ClickHouseClient(config) as client:
+        xmpl.setup_table(client)
+        xmpl.query_data(client)
 
 
 if __name__ == "__main__":
