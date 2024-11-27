@@ -14,7 +14,7 @@ pytestmark = pytest.mark.unit_test
 @unittest.mock.patch.object(ClickHouseClient, '__exit__')
 @unittest.mock.patch.object(ClickHouseClient, '__enter__')
 def test_context_manager_success(chclient_entr_mock, chclient_exit_mock, ch_client_mock):  # pylint: disable=unused-argument
-    """ Test `with` statement of the ClickHouseClient """
+    """ Test `with` statement of the ClickHouseClient"""
 
     # basic test configurations
     conf = Box({
@@ -34,6 +34,7 @@ def test_context_manager_success(chclient_entr_mock, chclient_exit_mock, ch_clie
         host='fake.com', port=123, user='user', password='pass', secure=False)
 
 
+# Test side effects and exceptions
 @unittest.mock.patch('clickhouse_connect.get_client', side_effect=urllib3.exceptions.ConnectionError('test exception is raised by connection'))
 @unittest.mock.patch.object(ClickHouseClient, '__enter__')
 @unittest.mock.patch.object(ClickHouseClient, '__exit__')
