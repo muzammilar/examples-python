@@ -32,7 +32,12 @@ services:
       - cockroach_data:/cockroach/cockroach-data  # Persistent storage for data
     environment:
       COCKROACH_MAX_HEAP: 1Gi  # Optional: Limit heap memory usage
-
+      COCKROACHDB_PASSWORD: mypassword  # Set the password for the root user
+    healthcheck:
+      test: ["CMD", "./cockroach", "sql", "--insecure", "--execute=SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 # Volume information
 volumes:

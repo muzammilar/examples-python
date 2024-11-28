@@ -2,10 +2,10 @@ import sqlite3
 
 
 class SQLiteClient:
-    """The class is used to perform qeuries to clickhouse."""
+    """The class is used to perform qeuries to SQLite3."""
 
     def __init__(self, filename: str):
-        """Connect to the ClickHouse server and return the client object
+        """Connect to the local sqlite db and return the client object
 
         :param str filename: json converted to a python struct (using box.Box)
         """
