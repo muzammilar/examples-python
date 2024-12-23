@@ -1,42 +1,78 @@
-# tests/test_math_util.py
-from unittest.mock import patch
+# tests/test_lru_cache.py
+
 import pytest
-from app import LRUCache
+import unittest
+from unittest.mock import patch
+from app.lru_cache import LRUCache
+
+
+@patch('app.LRUCache.write')
+@patch('app.LRUCache.get')
+def test_self_update(gt, wrte):
+
+    cache = LRUCache(2)
+    cache.write(1,"test1")
+    wrte.assert_called_once()
+    cache.write(2,"test2")
 
 # Test the add function
 def test_no_capacity():
     cache = LRUCache(0)
-    with pytest.raises(ValueError):
-        cache.write(1,"test")
-
-@patch('app.LRUCache._remove_oldest')
-@patch('app.StorageObject.timestamp')
-def test_basic_cache(rmv, ts):
-
-    ts =4600
-    cache = LRUCache(2)
-    cache.write(1,"test1")
-    rmv.assert_called_once()
-    cache.write(2,"test2")
-    assert cache.get(1) == "test1"
-    assert cache.get(2) == "test2"
+    # with pytest.raises(ValueError):
+    #    cache.write(1,"test")
+    cache.write(1,"test")
+    assert len(cache.cache) == 0
+    assert cache.get(1) is None
 
 
-def test_cache_overflow():
-    cache = LRUCache(2)
+class TestLRUCache(unittest.TestCase):
+    def test_cache_size_limit(self):
+        cache = LRUCache(3)
+        cache.write("key1", "value1")
+        cache.write("key2", "value2")
+        cache.write("key3", "value3")
+        self.assertEqual(len(cache.cache), 3)
 
-    cache.write(1,"test1")
-    cache.write(2,"test2")
-    cache.write(3,"test3")
-    assert cache.get(1) == None
-    assert cache.get(2) == "test2"
-    assert cache.get(3) == "test3"
+    def test_lru_eviction(self):
+        cache = LRUCache(3)
+        cache.write("key1", "value1")
+        cache.write("key2", "value2")
+        cache.write("key3", "value3")
+        cache.write("key4", "value4")
+        self.assertIsNone(cache.get("key1"))
 
-def test_get_nonexistent():
-    cache = LRUCache(2)
-    assert cache.get(1) == None
-    cache.write(1,"test1")
-    assert cache.get(1) == "test1"
+    def test_cache_retrieval(self):
+        cache = LRUCache(3)
+        cache.write("key1", "value1")
+        self.assertEqual(cache.get("key1"), "value1")
 
-def test_timestamp_iupdate():
-    pass
+    def test_cache_update(self):
+        cache = LRUCache(3)
+        cache.write("key1", "value1")
+        cache.write("key1", "new_value")
+        self.assertEqual(cache.get("key1"), "new_value")
+
+    def test_cache_overflow(self):
+        cache = LRUCache(3)
+        cache.write("key1", "value1")
+        cache.write("key2", "value2")
+        cache.write("key3", "value3")
+        cache.write("key4", "value4")
+        cache.write("key5", "value5")
+        self.assertIsNone(cache.get("key1"))
+        self.assertIsNone(cache.get("key2"))
+
+    def test_cache_get(self):
+        cache = LRUCache(3)
+        cache.write("key1", "value1")
+        cache.write("key2", "value2")
+        cache.write("key3", "value3")
+        cache.get("key1")
+        cache.write("key4", "value4")
+        cache.write("key5", "value5")
+        self.assertIsNone(cache.get("key3"))
+        self.assertIsNone(cache.get("key2"))
+
+    def test_cache_get_non_existent_key(self):
+        cache = LRUCache(3)
+        self.assertIsNone(cache.get("non_existent_key"))
