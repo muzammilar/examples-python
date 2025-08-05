@@ -32,6 +32,7 @@ class TestLRUCache(unittest.TestCase):
         cache.write("key2", "value2")
         cache.write("key3", "value3")
         self.assertEqual(len(cache.cache), 3)
+        self.assertEqual(cache.get_last_item(), ("key3", "value3"))
 
     def test_lru_eviction(self):
         cache = LRUCache(3)
@@ -39,17 +40,20 @@ class TestLRUCache(unittest.TestCase):
         cache.write("key2", "value2")
         cache.write("key3", "value3")
         cache.write("key4", "value4")
+        self.assertEqual(cache.get_last_item(), ("key4", "value4"))
         self.assertIsNone(cache.get("key1"))
 
     def test_cache_retrieval(self):
         cache = LRUCache(3)
         cache.write("key1", "value1")
         self.assertEqual(cache.get("key1"), "value1")
+        self.assertEqual(cache.get_last_item(), ("key1", "value1"))
 
     def test_cache_update(self):
         cache = LRUCache(3)
         cache.write("key1", "value1")
         cache.write("key1", "new_value")
+        self.assertEqual(cache.get_last_item(), ("key1", "new_value"))
         self.assertEqual(cache.get("key1"), "new_value")
 
     def test_cache_overflow(self):
@@ -59,6 +63,7 @@ class TestLRUCache(unittest.TestCase):
         cache.write("key3", "value3")
         cache.write("key4", "value4")
         cache.write("key5", "value5")
+        self.assertEqual(cache.get_last_item(), ("key5", "value5"))
         self.assertIsNone(cache.get("key1"))
         self.assertIsNone(cache.get("key2"))
 
@@ -69,9 +74,11 @@ class TestLRUCache(unittest.TestCase):
         cache.write("key3", "value3")
         cache.get("key1")
         cache.write("key4", "value4")
+        self.assertEqual(cache.get_last_item(), ("key4", "value4"))
         cache.write("key5", "value5")
         self.assertIsNone(cache.get("key3"))
         self.assertIsNone(cache.get("key2"))
+        self.assertEqual(cache.get_last_item(), ("key5", "value5"))
 
     def test_cache_get_non_existent_key(self):
         cache = LRUCache(3)
