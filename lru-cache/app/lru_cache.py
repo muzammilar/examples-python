@@ -49,3 +49,15 @@ class LRUCache:
             self.cache.move_to_end(key)  # Move the accessed key to the end
             return self.cache[key]
         return None
+
+    def get_last_item(self):
+        """
+        Retrieves the last item (most recently accessed/written) from the cache.
+
+        :return: A tuple containing the key and value of the last item, or None if the cache is empty.
+        """
+        if not self.cache:
+            return None, None
+        # The last item in an OrderedDict is the most recently added/moved item
+        last_key = next(reversed(self.cache))
+        return (last_key, self.cache[last_key])
