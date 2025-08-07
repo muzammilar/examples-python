@@ -6,7 +6,9 @@ LRU Cache
 Implementation of LRU Cache using an OrderedDict.
 """
 
+import threading
 from collections import OrderedDict
+
 
 class LRUCache:
 
@@ -19,6 +21,8 @@ class LRUCache:
         """
         self.cache = OrderedDict()
         self.capacity = capacity
+        self._lock = threading.Lock()
+
 
     def write(self, key, value):
         """
@@ -29,11 +33,14 @@ class LRUCache:
         :param key: The key to be added or updated in the cache.
         :param value: The value associated with the key.
         """
-        if key in self.cache:
-            self.cache.move_to_end(key)  # Move the updated item to the end
-        self.cache[key] = value
-        if len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)
+        with self._lock:
+            # update the key cache
+            if key in self.cache:
+                self.cache.move_to_end(key)  # Move the updated item to the end
+            self.cache[key] = value
+            if len(self.cache) > self.capacity:
+                popped_key, popped_value = self.cache.popitem(last=False)
+
 
     def get(self, key):
         """
@@ -44,10 +51,10 @@ class LRUCache:
         :param key: The key to retrieve from the cache.
         :return: The value associated with the key, or None if the key is not present.
         """
-
-        if key in self.cache:
-            self.cache.move_to_end(key)  # Move the accessed key to the end
-            return self.cache[key]
+        with self._lock:
+            if key in self.cache:
+                self.cache.move_to_end(key)  # Move the accessed key to the end
+                return self.cache[key]
         return None
 
     def get_last_item(self):
