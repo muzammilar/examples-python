@@ -1,5 +1,5 @@
 [package]
-name = "rust-example"
+name = "lang-rust-example"
 version = "0.1.0"
 edition = "2024"
 

@@ -1,5 +1,5 @@
 [project]
-name = "rust-example"
+name = "lang-rust-example"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

@@ -3,8 +3,7 @@
 ## Initial Setup
 
 ```sh
-mkdir rust-example && cd rust-example
-#
+# Initialize Module
 uv init .
 uv tool install maturin
 # create a python module
