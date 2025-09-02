@@ -6,7 +6,11 @@ SHELL := /bin/bash  # use this instead of /bin/bash
 default:
 	uv run main.py
 
-all: clean build-tools default
+all: clean empty-module build-tools default
+
+empty-module:
+	mkdir -p my_module
+	touch my_module/__init__.py
 
 build-tools:
 	uv sync
